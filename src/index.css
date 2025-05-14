@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Font & general UI improvements */
+:root {
+  --font-main: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: var(--font-main);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #1f1f1f;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background: linear-gradient(145deg, #1f2937, #111827);
+  color: #e5e7eb;
+}
+
+/* Typography */
+h1, h2, h3 {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+/* Buttons */
+button {
+  @apply rounded-lg px-4 py-2 font-medium transition-all duration-200 ease-in-out;
+  background-color: #3b82f6;
+  color: white;
+}
+button:hover {
+  background-color: #2563eb;
+}
+button:focus {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+}
+
+/* Links */
+a {
+  font-weight: 500;
+  color: #60a5fa;
+  transition: color 0.3s ease;
+}
+a:hover {
+  color: #3b82f6;
+}
+
+/* Forms & inputs */
+input[type='range'] {
+  @apply w-full;
+}
+
+input, select, textarea {
+  @apply bg-white text-black border border-gray-300 rounded-md px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400;
+}
+
+textarea {
+  resize: none;
+}
+
+/* Dark Mode Auto Support */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #1f2937;
+    background-color: #f9fafb;
+  }
+
+  body {
+    background: linear-gradient(145deg, #b1c1e3, #8eb0f3);
+    color: #1f2937;
+    align-items: center;
+  }
+
+  h1, h2, h3 {
+    color: #111827;
+  }
+
+  button {
+    background-color: #2563eb;
+    color: white;
+  }
+
+  button:hover {
+    background-color: #1d4ed8;
+  }
+
+  input, select, textarea {
+    background-color: #f3f5f8;
+    border-color: #cbd5e1;
+  }
+  
+}
