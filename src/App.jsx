@@ -3,15 +3,19 @@ import React, { useState, useEffect, Suspense, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDropzone } from 'react-dropzone';
 import { Canvas, useLoader } from '@react-three/fiber';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import * as THREE from 'three';
 import { OrbitControls, Html } from '@react-three/drei';
 import { SketchPicker } from 'react-color';
 import { saveAs } from 'file-saver';
 import './index.css';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 
 function TShirtModel({ scale, textureImage, customText, shirtColor, fontStyle, textColor, canvasRef }) {
-  const tshirtGltf = useLoader(GLTFLoader, '/models/tshirt.glb');
+  const tshirtGltf = useLoader(GLTFLoader, '/models/tshirt.glb', (loader) => {
+    loader.setMeshoptDecoder(MeshoptDecoder);
+  });
+
   const [dynamicTexture, setDynamicTexture] = useState(null);
 
   useEffect(() => {
@@ -123,14 +127,27 @@ function App() {
 
   const toggle3DModel = () => setShow3DModel(!show3DModel);
 
-  const calculateAvatarScale = () => {
+  const calculateBuild = () => {
+    const heightInM = height / 100;
+    const bmi = weight / (heightInM * heightInM);
+    if (bmi < 19) return 'lean';
+    if (bmi < 24) return 'regular';
+    if (bmi < 28) return 'athletic';
+    return 'big';
+  };
+
+  const calculateAvatarScale = (b) => {
     let scale = height / 180;
-    if (build === 'lean') scale *= 0.9;
-    else if (build === 'big') scale *= 1.1;
+    if (b === 'lean') scale *= 0.9;
+    else if (b === 'big') scale *= 1.1;
     return scale;
   };
 
-  useEffect(() => setAvatarScale(calculateAvatarScale()), [height, weight, build]);
+  useEffect(() => {
+    const autoBuild = calculateBuild();
+    setBuild(autoBuild);
+    setAvatarScale(calculateAvatarScale(autoBuild));
+  }, [height, weight]);
 
   useEffect(() => {
     const handleKeyDown = (e) => { if (e.altKey && e.key === 'q') toggle3DModel(); };
@@ -194,13 +211,8 @@ function App() {
         </div>
 
         <div className="mb-4">
-          <label className="block font-semibold">Build</label>
-          <select {...register('build')} value={build} onChange={(e) => setBuild(e.target.value)} className="w-full mt-2">
-            <option value="lean">Lean</option>
-            <option value="regular">Regular</option>
-            <option value="athletic">Athletic</option>
-            <option value="big">Big</option>
-          </select>
+          <label className="block font-semibold">Build (Auto-detected)</label>
+          <input type="text" readOnly value={build} className="w-full mt-2 p-2 border rounded bg-gray-100 cursor-not-allowed" />
         </div>
 
         <div className="mb-4">
